@@ -1,6 +1,7 @@
 # MIRTE Master Robot — SINDYc & Tube NMPC
 
 ![MIRTE Master](mirte_image.png)
+*Figure 1: MIRTE Master robot [1]*
 
 This repository contains code for modelling and robust trajectory tracking of the MIRTE Master omnidirectional robot. Modelling is performed with **SINDYc** (sparse identification of nonlinear dynamics with control), and control uses **tube-based nonlinear model predictive control (NMPC)** with a **discrete linear–quadratic regulator (DLQR)** ancillary law.
 
@@ -30,3 +31,7 @@ Two short clips show tube-based NMPC tracking with constant heading on different
 
 ### Circular path
 <video src="circular_path.mp4" controls width="720" style="max-width:100%"></video>
+
+---
+## References
+[1] Martin Klomp, Khaldon Araffa, and Gillian Saunders-Smits. “MIRTE: an affordable, open, mobile robot education platform”. In: (2024). Publisher: Zenodo. DOI: 10.5281/ZENODO.14256821.
