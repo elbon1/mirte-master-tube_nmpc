@@ -3,3 +3,4 @@ build/
 **/cache/
 *.csv
 __pycache__
+.vs
