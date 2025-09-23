@@ -9,14 +9,13 @@ This repository contains code for modelling and robust trajectory tracking of th
 
 ## Repository structure
 
-- **A-MATLAB/**
+- `A-MATLAB/`
   - SINDYc model identification.
   - Tube-based NMPC simulation using `fmincon`.
-- **B-Tube-NMPC_Offline/**
-  - **ROS 2 package** for offline simulation using `acados`
-- **C-Tube-NMPC_Deployment/**
+- `B-Tube-NMPC_Deployment/`
   - Real-time controller for the MIRTE Master robot.
-  - Includes a baseline NMPC controller for comparison.
+  - Provides a simulated model with fictitious disturbances for offline evaluation.
+  - Contains a baseline NMPC controller for comparison.
 	
 Each directory includes its own `README.md` and implementation details.
 
