@@ -1,0 +1,5 @@
+*.log
+build/
+**/cache/
+*.csv
+__pycache__
