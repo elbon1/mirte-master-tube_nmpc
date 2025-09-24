@@ -1,4 +1,4 @@
-# MIRTE Master Robot � SINDYc & Tube NMPC
+# MIRTE Master Robot - SINDYc & Tube NMPC
 
 ![MIRTE Master](mirte_image.png)
 *Figure 1: MIRTE Master robot [1]*
@@ -23,9 +23,9 @@ Each directory includes its own `README.md` and implementation details.
 
 ## Demonstration videos
 
-Two short clips show tube-based NMPC tracking with constant heading on different paths:
+Two short clips show tube-based NMPC tracking with constant heading on different paths: https://elbon1.github.io/mirte-master-tube_nmpc/
 
-### Rectangular path
+<!-- ### Rectangular path
 
 <video controls width="720" style="max-width:100%">
   <source src="https://github.com/elbon1/mirte-master-tube_nmpc/releases/download/v0.1.0/rectangular_path.mp4?raw=1" type="video/mp4">
@@ -35,12 +35,12 @@ Two short clips show tube-based NMPC tracking with constant heading on different
 
 <video controls width="720" style="max-width:100%">
   <source src="https://github.com/elbon1/mirte-master-tube_nmpc/releases/download/v0.1.0/circular_path.mp4?raw=1" type="video/mp4">
-</video>
+</video> -->
 
 ---
 
 ## References
 
-[1] Martin Klomp, Khaldon Araffa, and Gillian Saunders-Smits. �MIRTE: an affordable, open, mobile robot education platform�. In: (2024). Publisher: Zenodo. DOI: 10.5281/ZENODO.14256821.
+[1] Martin Klomp, Khaldon Araffa, and Gillian Saunders-Smits. MIRTE: an affordable, open, mobile robot education platform. In: (2024). Publisher: Zenodo. DOI: 10.5281/ZENODO.14256821.
 
 
