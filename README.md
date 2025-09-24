@@ -3,7 +3,7 @@
 ![MIRTE Master](mirte_image.png)
 *Figure 1: MIRTE Master robot [1]*
 
-This repository contains code for modelling and robust trajectory tracking of the MIRTE Master omnidirectional robot. Modelling is performed with **SINDYc** (sparse identification of nonlinear dynamics with control), and control uses **tube-based nonlinear model predictive control (NMPC)** with a **discrete linear�quadratic regulator (DLQR)** ancillary law.
+This repository contains code for modelling and robust trajectory tracking of the MIRTE Master omnidirectional robot. Modelling is performed with **SINDYc** (sparse identification of nonlinear dynamics with control), and control uses **tube-based nonlinear model predictive control (NMPC)** with a **discrete linear-quadratic regulator (DLQR)** ancillary law.
 
 ---
 
