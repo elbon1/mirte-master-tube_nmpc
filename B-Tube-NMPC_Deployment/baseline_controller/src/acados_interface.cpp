@@ -1,18 +1,19 @@
 #include "acados_interface.h"
 
-AcadosInterface::AcadosInterface() 
+AcadosInterface::AcadosInterface()
 {
     capsule_ = mirte_acados_create_capsule();
     if (!capsule_) throw std::runtime_error("Acados capsule creation failed");
 
     if (mirte_acados_create(capsule_) != 0)
-        throw std::runtime_error("Acados solver initialisation failed"); 
+        throw std::runtime_error("Acados solver initialization failed"); 
 
     // Get parameters
     nlp_config_ = mirte_acados_get_nlp_config(capsule_);
     nlp_dims_ = mirte_acados_get_nlp_dims(capsule_);
     nlp_in_ = mirte_acados_get_nlp_in(capsule_);
     nlp_out_ = mirte_acados_get_nlp_out(capsule_);
+        
 }
 
 AcadosInterface::~AcadosInterface() 
@@ -20,34 +21,34 @@ AcadosInterface::~AcadosInterface()
     if (capsule_) {
         mirte_acados_free(capsule_);
         mirte_acados_free_capsule(capsule_);
+        
     }
 }
 
-void AcadosInterface::setState(const VectorXd& x_real, const VectorXd& rci, const VectorXd& LB_tightened, const VectorXd& UB_tightened)
+void AcadosInterface::setState(const VectorXd& x_real, const VectorXd& LB, const VectorXd& UB)
 {
    
-    // Set the x0_hat and LB & UB tightened bounds at stage 0 (initial condition)
+    // Set the x0 = current pose and LB & UB bounds at stage 0 (initial condition)
     int idxbx0[MIRTE_NBX];
     double lbx0[MIRTE_NBX], ubx0[MIRTE_NBX];
 
     for (int i = 0; i < MIRTE_NP; ++i){
         idxbx0[i] = i;
-        lbx0[i] = x_real(i) - rci(i);
-        ubx0[i] = x_real(i) + rci(i);
+        lbx0[i] = x_real(i);
+        ubx0[i] = x_real(i);
     }
 
     for (int i = 0; i < MIRTE_NU; ++i){
         idxbx0[3+i] = 3+i;
-        lbx0[3+i] = LB_tightened[i];  // Set tightened constraints
-        ubx0[3+i] = UB_tightened[i];
+        lbx0[3+i] = LB[i]; 
+        ubx0[3+i] = UB[i];
     }
 
     ocp_nlp_constraints_model_set(nlp_config_, nlp_dims_, nlp_in_, nlp_out_, 0, "idxbx", idxbx0);
     ocp_nlp_constraints_model_set(nlp_config_, nlp_dims_, nlp_in_, nlp_out_, 0, "lbx", lbx0);
     ocp_nlp_constraints_model_set(nlp_config_, nlp_dims_, nlp_in_, nlp_out_, 0, "ubx", ubx0);
 
-    // Set the x0_hat and LB & UB tightened bounds throughout horizon (1 to Np-1 stages)
-    // x0hat set to large number as inf can not be handled
+    // Set bounds throughout horizon
     double lbx[MIRTE_NBX], ubx[MIRTE_NBX];
 
     for (int i = 0; i < MIRTE_NP; ++i){
@@ -56,17 +57,18 @@ void AcadosInterface::setState(const VectorXd& x_real, const VectorXd& rci, cons
     }
 
     for (int i = 0; i < MIRTE_NU; ++i){
-        lbx[3+i] = LB_tightened[i];  // Set tightened constraints
-        ubx[3+i] = UB_tightened[i];
+        lbx[3+i] = LB[i];
+        ubx[3+i] = UB[i];
     }
     for (int stage = 1; stage < MIRTE_N; ++stage){
         ocp_nlp_constraints_model_set(nlp_config_, nlp_dims_, nlp_in_, nlp_out_, stage, "idxbx", idxbx0);
         ocp_nlp_constraints_model_set(nlp_config_, nlp_dims_, nlp_in_, nlp_out_, stage, "lbx", lbx);
         ocp_nlp_constraints_model_set(nlp_config_, nlp_dims_, nlp_in_, nlp_out_, stage, "ubx", ubx);
     }
+
 }
 
-void AcadosInterface::setReference(const MatrixXd& x_ref_traj,const VectorXd& LB_tightened, const VectorXd& UB_tightened)
+void AcadosInterface::setReference(const MatrixXd& x_ref_traj,const VectorXd& LB, const VectorXd& UB)
 {
     // Set reference trajectory througout horizon (0 to Np-1 stages)
     double p[MIRTE_NP]= {0.0};
@@ -90,8 +92,8 @@ void AcadosInterface::setReference(const MatrixXd& x_ref_traj,const VectorXd& LB
     double yref_e[MIRTE_NYN] = {0.0};
     ocp_nlp_cost_model_set(nlp_config_, nlp_dims_, nlp_in_, MIRTE_N, "yref", yref_e);
     
-    // Set the x0_hat and LB & UB tightened bounds at terminal (Np stage)
-    // x0hat set to large number as inf can not be handled 
+    // Set LB & UB bounds at terminal (Np stage)
+    // current pose bounds set to large number as inf can not be handled 
     int idxbx_e[MIRTE_NBXN];
     for (int i = 0; i < MIRTE_NBXN; ++i){
         idxbx_e[i] = i;
@@ -104,8 +106,8 @@ void AcadosInterface::setReference(const MatrixXd& x_ref_traj,const VectorXd& LB
     }
 
     for (int i = 0; i < MIRTE_NU; ++i){
-        lbx_e[3+i] = LB_tightened[i];  // Set tightened constraints
-        ubx_e[3+i] = UB_tightened[i];
+        lbx_e[3+i] = LB[i];
+        ubx_e[3+i] = UB[i];
     }
 
     ocp_nlp_constraints_model_set(nlp_config_, nlp_dims_, nlp_in_, nlp_out_, MIRTE_N, "idxbx", idxbx_e);
@@ -113,9 +115,9 @@ void AcadosInterface::setReference(const MatrixXd& x_ref_traj,const VectorXd& LB
     ocp_nlp_constraints_model_set(nlp_config_, nlp_dims_, nlp_in_, nlp_out_, MIRTE_N, "ubx", ubx_e);
 }
 
-VectorXd AcadosInterface::solve() 
-{
-    // Solve OCP
+VectorXd AcadosInterface::solve() {
+
+    // Solve the OCP
     int status = mirte_acados_solve(capsule_);
     if (status != 0) {
         throw std::runtime_error("Acados solve failed with status " + std::to_string(status));
@@ -127,16 +129,6 @@ VectorXd AcadosInterface::solve()
     VectorXd control(MIRTE_NU);
     control = x_solved.tail(MIRTE_NU);
     return control;
-}
-
-VectorXd AcadosInterface::getx0() 
-{
-    // Get initial state x0_hat
-    VectorXd X0_nom(MIRTE_NX);
-    ocp_nlp_out_get(nlp_config_, nlp_dims_, nlp_out_, 0, "x", X0_nom.data());
-    VectorXd x0_nom(MIRTE_NBX0);
-    x0_nom = X0_nom.head(3);
-    return x0_nom;
 }
 
 bool AcadosInterface::initialise(){  

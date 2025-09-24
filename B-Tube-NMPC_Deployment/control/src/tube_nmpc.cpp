@@ -351,7 +351,6 @@ bool TubeNMPC::runControlLoop(int step) {
     rclcpp::shutdown();
     std::exit(EXIT_FAILURE);
 }
-
 }
 
 // G(x) maps body-frame velocities into world rates - needed for simulating disturbance
