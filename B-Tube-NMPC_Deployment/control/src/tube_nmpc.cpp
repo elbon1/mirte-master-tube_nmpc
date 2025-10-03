@@ -47,7 +47,7 @@ void TubeNMPC::initParameters()
 
   // Maximum disturbance obtained from data
   w_max = VectorXd::Zero(nx);
-  w_max << 0.04, 0.03, 0.09;
+  w_max << 0.05, 0.05, 0.05;
 
   // Histories initialisation
   x_nomHistory = MatrixXd::Zero(Nt+1, nx);
