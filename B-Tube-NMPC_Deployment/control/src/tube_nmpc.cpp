@@ -117,11 +117,11 @@ MatrixXd generateCircleNoHeadingChangeFull(const Vector3d& current_pose, double 
     const double y0   = current_pose(1);
     const double yaw0 = current_pose(2);
 
-    const double omega = * (v_tan / R); // rad/s
+    const double omega = v_tan / R; // rad/s
     const double T     = 2.0 * M_PI * R / v_tan; // seconds for full circle
 
-    cx = x0 - R * std::sin(yaw0);
-    cy = y0 + R * std::cos(yaw0);
+    const double cx = x0 - R * std::sin(yaw0);
+    const double cy = y0 + R * std::cos(yaw0);
 
     // Angle on the circle at t=0 so we start at current (x0,y0)
     const double theta0 = std::atan2(y0 - cy, x0 - cx);
@@ -354,7 +354,7 @@ bool TubeNMPC::runControlLoop(int step) {
 }
 
 // G(x) maps body-frame velocities into world rates - needed for simulating disturbance
-static inline Matrix3d G_of(const VectorXd& x) {
+Eigen::Matrix3d G_of(const VectorXd& x) {
   const double theta = x(2); // yaw = x3
   Matrix3d G;
   G <<  std::cos(theta), -std::sin(theta), 0.0,
@@ -491,7 +491,7 @@ void TubeNMPC::publish_nominal_pose(const Eigen::VectorXd& x_nom_0)
 
 bool isStable(const MatrixXd& Acl) 
 {
-  EigenSolver<MatrixXd> solver(Acl);
+  Eigen::EigenSolver<MatrixXd> solver(Acl);
   VectorXcd eigvals = solver.eigenvalues();
 
   for (int i = 0; i < eigvals.size(); ++i) {
@@ -501,4 +501,3 @@ bool isStable(const MatrixXd& Acl)
   }
   return true; // All eigenvalues inside unit circle
 }
-

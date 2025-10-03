@@ -22,18 +22,21 @@
 
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
+using Eigen::VectorXcd;
 using Eigen::Vector3d;
 using Eigen::Matrix3d;
 using std::vector;
 using Eigen::RowVectorXd;
 using Eigen::Map;
 using std::floor;
+using std::cout;
+using std::endl;
 
 bool isStable(const MatrixXd& Acl);
 
 MatrixXd vcat(const std::vector<Eigen::MatrixXd>& blocks);
 MatrixXd makeWindow(const Eigen::MatrixXd& xref, int k, int Np);
-Matrix3d G_of(const VectorXd& x);
+Eigen::Matrix3d G_of(const Eigen::VectorXd& x);
 
 MatrixXd generateCircleNoHeadingChangeFull(const Vector3d& current_pose,
             double R, double v_tan, double dt);
@@ -42,7 +45,7 @@ class TubeNMPC : public rclcpp::Node {
 public:
   TubeNMPC();
 
-  RowVectorXd generateReferenceTrreadmajectory();
+  RowVectorXd generateReferenceTrajectory();
   bool runControlLoop(int step);
 
   // State interface
